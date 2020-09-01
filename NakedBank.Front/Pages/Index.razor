@@ -1,0 +1,22 @@
+﻿@page "/"
+@attribute [Authorize]
+@inject ILocalStorageService LocalStorageService
+@inject NavigationManager NavigationManager
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await LocalStorageService.GetItem<User>("User");
+
+        if (user == null)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}

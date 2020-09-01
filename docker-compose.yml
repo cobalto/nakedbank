@@ -1,0 +1,49 @@
+version: '3.4'
+
+services:
+  nakedbank.webapi:
+    image: ${DOCKER_REGISTRY-}nakedbankwebapi
+    build:
+      context: .
+      dockerfile: NakedBank.WebApi/Dockerfile
+    depends_on:
+      - db
+    networks:
+      - naked-net
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: naked1234
+      MYSQL_DATABASE: NakedDatabase
+      MYSQL_USER: NakedUser
+      MYSQL_PASSWORD: n@k3dPass123
+    volumes:
+      - type: volume
+        source: dbdata
+        target: /var/lib/mysql
+        volume:
+          nocopy: true
+    networks:
+      - naked-net
+  adminer:
+    image: adminer
+    restart: always
+    environment:
+      ADMINER_DESIGN: pepa-linha-dark
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    networks:
+      - naked-net
+networks: 
+    naked-net:
+        driver: bridge
+volumes:
+  dbdata:

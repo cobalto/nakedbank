@@ -1,0 +1,29 @@
+﻿@page "/instalments"
+@attribute [Authorize]
+@inject ILocalStorageService LocalStorageService
+@inject NavigationManager NavigationManager
+
+<h1>instalments</h1>
+
+<p>Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var user = await LocalStorageService.GetItem<User>("User");
+
+        if (user == null)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}
