@@ -48,8 +48,11 @@ else
         {
             NavigationManager.NavigateTo("/login");
         }
+        else
+        {
+            User.Accounts = await NakedService.GetAccounts();
 
-        User.Accounts = await NakedService.GetAccounts();
+        }
     }
 
     private User User;

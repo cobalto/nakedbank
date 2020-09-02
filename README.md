@@ -25,6 +25,11 @@ NakedBank.Infrastructure | Data Layer, DbContext and Repositories
 NakedBank.Shared | Common DTOs
 NakedBank.WebApi | API Project
 NakedBank.Front | Blazor SPA
+NakedBank.Application.Tests | Test Solution
+NakedBank.Domain.Tests | Test Solution
+
+## Tests
+![nakedbank_tests](https://user-images.githubusercontent.com/1196314/92039307-3f62ef80-ed4b-11ea-8acf-e1060d01fcc4.PNG)
 
 ### First time setup
 With Docker installed, just open the solution on VS and run it on the default "Docker Compose" profile, the back-end should run without problems.
@@ -48,6 +53,7 @@ Find the file at ~\NakedBank.Front\wwwroot\appsettings.json and update it
 + Better use of the Domain models, too much control on the services logic
 + Better control of some visual components when not logged in (Blazor Webassembly right now stil has some problems updating components when values change)
 + Charts (most of them are paid, Chart.js has a port to Blazor but only documentation for the Server-Side version)
++ More tests
 
 ## Open API
 ![open_api_nakedbank](https://user-images.githubusercontent.com/1196314/91937110-a76ff200-ecc7-11ea-9365-98d8f6ab2ba9.PNG)
@@ -59,3 +65,6 @@ Find the file at ~\NakedBank.Front\wwwroot\appsettings.json and update it
 ![nakedbank_fron4](https://user-images.githubusercontent.com/1196314/91937106-a63ec500-ecc7-11ea-9330-b92af01fb762.PNG)
 ![nakedbank_fron5](https://user-images.githubusercontent.com/1196314/91937108-a63ec500-ecc7-11ea-8145-e7d063701675.PNG)
 ![nakedbank_fron6](https://user-images.githubusercontent.com/1196314/91937109-a6d75b80-ecc7-11ea-9344-90ea971a3824.PNG)
+
+> DISCLAIMER:  
+> YES. The name is a [silly joke](https://blog.nubank.com.br/por-que-nubank-chama-nubank/) with a purple brazilian bank

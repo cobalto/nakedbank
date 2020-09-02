@@ -56,8 +56,10 @@ else
         {
             NavigationManager.NavigateTo("/login");
         }
-
-        await UpdateTransactions();
+        else
+        {
+            await UpdateTransactions();
+        }
     }
 
     private async Task UpdateTransactions()
