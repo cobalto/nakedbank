@@ -1,6 +1,7 @@
 ﻿using NakedBank.Front.Models;
 using NakedBank.Shared.Models.Requests;
 using NakedBank.Shared.Models.Responses;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace NakedBank.Front.Services
@@ -26,6 +27,7 @@ namespace NakedBank.Front.Services
 
             user.Authorization = await _httpService.Post<AuthResponse>("users/authenticate", new AuthRequest() { Login = "12345678900", Password = "naked1234naked" });
             user.Profile = await _httpService.Get<ProfileResponse>("users/profile", user.Authorization.Token);
+            user.Accounts = await _httpService.Get<IEnumerable<AccountResponse>>("users/accounts", user.Authorization.Token);
 
             return user;
         }

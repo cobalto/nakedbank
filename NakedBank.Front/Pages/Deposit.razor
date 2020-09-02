@@ -1,29 +1,128 @@
 ﻿@page "/deposit"
 @attribute [Authorize]
 @inject ILocalStorageService LocalStorageService
+@inject INakedService NakedService
 @inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations;
 
-<h1>deposit</h1>
-
-<p>Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+@if (User == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="card">
+        <h4 class="card-header">New Deposit</h4>
+        <div class="card-body">
+            <EditForm Model="@DepoForm" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label>Amount</label>
+                    <InputNumber @bind-Value="DepoForm.Amount" class="form-control" />
+                    <ValidationMessage For="@(() => DepoForm.Amount)" />
+                </div>
+                <div class="form-group">
+                    <label>Account</label>
+                    <InputSelect @bind-Value="DepoForm.Account" type="password" class="form-control">
+                        <option value="9999">Select an Account</option>
+                        @foreach (var acc in User.Accounts)
+                            {
+                            <option value="@acc.AccountId">@acc.AccountNumber</option>
+                            }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => DepoForm.Account)" />
+                </div>
+                <button class="btn btn-primary" type="submit">
+                    Submit
+                </button>
+            </EditForm>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="container">
+        <div class="row row-cols-2">
+            @foreach (var AccTransKvp in TransactionDict)
+            {
+                <div class="col">
+                    <div class="card col-12">
+                        <h4 class="card-header">@AccTransKvp.Key.AccountNumber</h4>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Timestamp</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var transaction in AccTransKvp.Value)
+                                    {
+                                        <tr>
+                                            <td>@transaction.TransactionId</td>
+                                            <td>@transaction.Timestamp.ToLongDateString()</td>
+                                            <td>R$ @transaction.Amount</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        var user = await LocalStorageService.GetItem<User>("User");
+        User = await LocalStorageService.GetItem<User>("User");
 
-        if (user == null)
+        if (User == null)
         {
             NavigationManager.NavigateTo("/login");
         }
+
+        await UpdateTransactions();
     }
 
-    private int currentCount = 0;
-
-    private void IncrementCount()
+    private async Task UpdateTransactions()
     {
-        currentCount++;
+        TransactionDict.Clear();
+
+        foreach (var acc in User.Accounts)
+        {
+            var trans = (await NakedService.GetTransactions(acc.AccountId, 10))
+                                .Where(t => t.TransactionType == NakedBank.Shared.Models.TransactionType.Deposit)
+                                .OrderByDescending(t => t.Timestamp);
+
+            TransactionDict.Add(acc, trans);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        int accountNum = Convert.ToInt32(DepoForm.Account);
+        TransactionRequest trans = new TransactionRequest() { TransactionType = NakedBank.Shared.Models.TransactionType.Deposit, Amount = DepoForm.Amount };
+
+        var result = await NakedService.SendTransaction(accountNum, trans);
+
+        await UpdateTransactions();
+    }
+
+    private User User;
+    private TransactionForm DepoForm = new TransactionForm();
+    private Dictionary<AccountResponse, IEnumerable<TransactionResponse>> TransactionDict = new Dictionary<AccountResponse, IEnumerable<TransactionResponse>>();
+
+    private class TransactionForm
+    {
+        [Required]
+        public string Account { get; set; }
+
+        [Required]
+        public decimal Amount { get; set; }
     }
 }

@@ -49,12 +49,19 @@ namespace NakedBank.Front.Services
 
             var content = new StringContent(JsonConvert.SerializeObject(value), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync(uri, content);
+            try
+            {
+                var response = await _httpClient.PostAsync(uri, content);
 
-            var result = System.Text.Json.JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync(),
-                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var result = System.Text.Json.JsonSerializer.Deserialize<T>(await response.Content.ReadAsStringAsync(),
+                                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return result;
+                return result;
+            }
+            catch(Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

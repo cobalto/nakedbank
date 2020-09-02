@@ -80,12 +80,12 @@ namespace NakedBank.Infrastructure
 
                 foreach (var user in context.Users.ToList())
                 {
-                    for (int i = 0; i < new Random().Next(1, 3); i++)
+                    for (int i = 0; i < new Random().Next(2, 4); i++)
                     {
                         var acc = new Account()
                         {
                             UserId = user.UserId,
-                            AccountNumber = $"{defaultBranch.PadRight(3, '0')}9{user.UserId.ToString().PadLeft(6, '0')}",
+                            AccountNumber = $"{defaultBranch.PadRight(3, '0')}9{user.UserId.ToString().PadRight(5, '0')}{i}",
                             BranchId = 1,
                             Balance = 85,
                         };
@@ -130,14 +130,14 @@ namespace NakedBank.Infrastructure
                 {
                     var balances = new List<Transaction>
                     {
-                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-0), Amount = 100, TransactionType = (int)TransactionType.Deposit },
-                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-0), Amount = 75, TransactionType = (int)TransactionType.Payment },
-                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-2), Amount = 25, TransactionType = (int)TransactionType.Withdraw },
-                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-3), Amount = 35, TransactionType = (int)TransactionType.Deposit },
-                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-4), Amount = 230, TransactionType = (int)TransactionType.Payment },
-                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-5), Amount = 300, TransactionType = (int)TransactionType.Withdraw },
-                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-6), Amount = 200, TransactionType = (int)TransactionType.Withdraw },
-                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-7), Amount = 20, TransactionType = (int)TransactionType.Withdraw },
+                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-0), Amount = 100, BalanceAfterTransaction = 85, TransactionType = (int)TransactionType.Deposit },
+                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-0), Amount = 75, BalanceAfterTransaction = -15, TransactionType = (int)TransactionType.Payment },
+                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-2), Amount = 25, BalanceAfterTransaction = 60, TransactionType = (int)TransactionType.Withdraw },
+                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-3), Amount = 35, BalanceAfterTransaction = 85, TransactionType = (int)TransactionType.Deposit },
+                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-4), Amount = 230, BalanceAfterTransaction = 50, TransactionType = (int)TransactionType.Payment },
+                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-5), Amount = 300, BalanceAfterTransaction = 280, TransactionType = (int)TransactionType.Withdraw },
+                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-6), Amount = 200, BalanceAfterTransaction = 580, TransactionType = (int)TransactionType.Withdraw },
+                        new Transaction { AccountId = account.AccountId, Timestamp = DateTime.Now.Date.AddDays(-7), Amount = 20, BalanceAfterTransaction = 780, TransactionType = (int)TransactionType.Withdraw },
                     };
 
                     context.AddRange(balances);

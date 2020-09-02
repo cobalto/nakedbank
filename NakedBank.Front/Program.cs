@@ -16,11 +16,11 @@ namespace NakedBank.Front
 
             builder.Services
                 .AddScoped<IAuthenticationService, AuthenticationService>()
-                .AddScoped<IUserService, NakedService>()
+                .AddScoped<INakedService, NakedService>()
                 .AddScoped<IHttpService, HttpService>()
                 .AddScoped<ILocalStorageService, LocalStorageService>();
 
-            builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://localhost:32770/api/") });
+            builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["apiUrl"]) });
 
             var host = builder.Build();
 

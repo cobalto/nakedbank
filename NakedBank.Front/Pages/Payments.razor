@@ -1,62 +1,142 @@
 @page "/payments"
 @attribute [Authorize]
 @inject ILocalStorageService LocalStorageService
+@inject INakedService NakedService
 @inject NavigationManager NavigationManager
+@using System.ComponentModel.DataAnnotations;
 
-<h1>payments</h1>
-
-<p>This component demonstrates fetching data from the server.</p>
-
-@if (forecasts == null)
+@if (User == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
+    <div class="card">
+        <h4 class="card-header">New Payment</h4>
+        <div class="card-body">
+            <EditForm Model="@PayForm" OnValidSubmit="HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="form-group">
+                    <label>Amount</label>
+                    <InputNumber @bind-Value="PayForm.Amount" class="form-control" />
+                    <ValidationMessage For="@(() => PayForm.Amount)" />
+                </div>
+                <div class="form-group">
+                    <label>Barcode</label>
+                    <InputText @bind-Value="PayForm.BarCode" class="form-control" />
+                    <ValidationMessage For="@(() => PayForm.BarCode)" />
+                </div>
+                <div class="form-group">
+                    <label>Account</label>
+                    <InputSelect @bind-Value="PayForm.Account" type="password" class="form-control">
+                        <option value="9999">Select an Account</option>
+                        @foreach (var acc in User.Accounts)
+                            {
+                            <option value="@acc.AccountId">@acc.AccountNumber</option>
+                            }
+                    </InputSelect>
+                    <ValidationMessage For="@(() => PayForm.Account)" />
+                </div>
+                <button class="btn btn-primary" type="submit">
+                    Submit
+                </button>
+            </EditForm>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="container">
+        <div class="row row-cols-1">
+            @foreach (var AccTransKvp in TransactionDict)
             {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
+                <div class="col">
+                    <div class="card col-12">
+                        <h4 class="card-header">@AccTransKvp.Key.AccountNumber</h4>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Timestamp</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var transaction in AccTransKvp.Value)
+                                    {
+                                        <tr>
+                                            <td>@transaction.TransactionId</td>
+                                            <td>@transaction.Timestamp.ToLongDateString()</td>
+                                            <td>R$ @transaction.Amount</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    </div>
 }
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        var user = await LocalStorageService.GetItem<User>("User");
+        User = await LocalStorageService.GetItem<User>("User");
 
-        if (user == null)
+        if (User == null)
         {
             NavigationManager.NavigateTo("/login");
         }
+
+        await UpdateTransactions();
     }
 
-    private WeatherForecast[] forecasts;
-
-    public class WeatherForecast
+    private async Task UpdateTransactions()
     {
-        public DateTime Date { get; set; }
+        TransactionDict.Clear();
 
-        public int TemperatureC { get; set; }
+        foreach (var acc in User.Accounts)
+        {
+            var trans = (await NakedService.GetTransactions(acc.AccountId, 10))
+                                .Where(t => t.TransactionType == NakedBank.Shared.Models.TransactionType.Payment)
+                                .OrderByDescending(t => t.Timestamp);
 
-        public string Summary { get; set; }
+            TransactionDict.Add(acc, trans);
+        }
+    }
 
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    private async Task HandleValidSubmit()
+    {
+        int accountNum = Convert.ToInt32(PayForm.Account);
+        TransactionRequest trans = new TransactionRequest()
+        {
+            TransactionType = NakedBank.Shared.Models.TransactionType.Payment,
+            Amount = PayForm.Amount,
+            Barcode = PayForm.BarCode
+        };
+
+        var result = await NakedService.SendTransaction(accountNum, trans);
+
+        await UpdateTransactions();
+    }
+
+    private User User;
+    private TransactionForm PayForm = new TransactionForm();
+    private Dictionary<AccountResponse, IEnumerable<TransactionResponse>> TransactionDict = new Dictionary<AccountResponse, IEnumerable<TransactionResponse>>();
+
+    private class TransactionForm
+    {
+        [Required]
+        public string Account { get; set; }
+
+        [Required]
+        public decimal Amount { get; set; }
+
+        [Required]
+        [StringLength(44, MinimumLength = 44, ErrorMessage = "Barcodes must have 44 characters")]
+        public string BarCode { get; set; }
     }
 }

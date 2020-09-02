@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NakedBank.Infrastructure.Entities
@@ -22,5 +23,9 @@ namespace NakedBank.Infrastructure.Entities
 
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
+
+        public virtual List<Balance> Balances { get; set; }
+
+        public virtual List<Transaction> Transactions { get; set; }
     }
 }

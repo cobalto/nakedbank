@@ -75,7 +75,7 @@ namespace NakedBank.Application.Services
                 return new TransactionResponse() { Errors = account.Errors };
             }
 
-            var transaction = await _transactionRepository.ExecuteTransaction(TransactionType.Withdraw, accountId, Amount, account.Balance);
+            var transaction = await _transactionRepository.ExecuteTransaction(type, accountId, Amount, account.Balance);
 
             await _accountRepository.UpdateBalance(userId, account.AccountId, account.Balance);
 

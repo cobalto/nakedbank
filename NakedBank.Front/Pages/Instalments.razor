@@ -1,29 +1,77 @@
 ﻿@page "/instalments"
 @attribute [Authorize]
 @inject ILocalStorageService LocalStorageService
+@inject INakedService NakedService
 @inject NavigationManager NavigationManager
 
-<h1>instalments</h1>
+<h1>Instalment</h1>
 
-<p>Current count: @currentCount</p>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+@if (User == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="container">
+        <div class="row row-cols-1">
+            @foreach (var AccTransKvp in TransactionDict)
+            {
+                <div class="col">
+                    <div class="card col-12">
+                        <h4 class="card-header">@AccTransKvp.Key.AccountNumber</h4>
+                        <div class="card-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Timestamp</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var transaction in AccTransKvp.Value)
+                                    {
+                                        <tr>
+                                            <td>@transaction.TransactionId</td>
+                                            <td>@transaction.Timestamp.ToLongDateString()</td>
+                                            <td>R$ @transaction.Amount</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
 
 @code {
     protected override async Task OnInitializedAsync()
     {
-        var user = await LocalStorageService.GetItem<User>("User");
+        User = await LocalStorageService.GetItem<User>("User");
 
-        if (user == null)
+        if (User == null)
         {
             NavigationManager.NavigateTo("/login");
         }
+
+        await UpdateTransactions();
     }
 
-    private int currentCount = 0;
-
-    private void IncrementCount()
+    private async Task UpdateTransactions()
     {
-        currentCount++;
+        TransactionDict.Clear();
+
+        foreach (var acc in User.Accounts)
+        {
+            var trans = (await NakedService.GetTransactions(acc.AccountId, 10)).OrderByDescending(t => t.Timestamp);
+
+            TransactionDict.Add(acc, trans);
+        }
     }
+
+    private User User;
+    private Dictionary<AccountResponse, IEnumerable<TransactionResponse>> TransactionDict = new Dictionary<AccountResponse, IEnumerable<TransactionResponse>>();
 }

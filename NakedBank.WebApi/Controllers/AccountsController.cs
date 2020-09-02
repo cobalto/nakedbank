@@ -45,11 +45,6 @@ namespace NakedBank.WebApi.Controllers
 
                 var balances = await this._accountService.GetBalances(userId, accountId, days);
 
-                if (balances.SelectMany(a => a.Errors).Any())
-                {
-                    return BadRequest(balances);
-                }
-
                 return Ok(balances);
             }
             catch (Exception ex)
@@ -72,11 +67,6 @@ namespace NakedBank.WebApi.Controllers
 
                 var transactions = await this._accountService.GetTransactions(userId, accountId, days);
 
-                if (transactions.SelectMany(a => a.Errors).Any())
-                {
-                    return BadRequest(transactions);
-                }
-
                 return Ok(transactions);
             }
             catch (Exception ex)
@@ -98,11 +88,6 @@ namespace NakedBank.WebApi.Controllers
                 var userId = await _userService.GetUserId(username);
 
                 TransactionResponse response = await this._accountService.ExecuteTransaction(request.TransactionType, userId, accountId, request.Amount, request.Barcode);
-
-                if (response.Errors.Any())
-                {
-                    return BadRequest(response);
-                }
 
                 return Ok(response);
             }

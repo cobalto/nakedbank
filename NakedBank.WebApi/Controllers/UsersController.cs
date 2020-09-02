@@ -42,11 +42,6 @@ namespace NakedBank.WebApi.Controllers
 
                 var profile = await _userService.GetUserProfile(username);
 
-                if (profile.Errors.Any())
-                {
-                    return BadRequest(profile);
-                }
-
                 return Ok(profile);
             }
             catch (Exception ex)
@@ -68,11 +63,6 @@ namespace NakedBank.WebApi.Controllers
                 var userId = await _userService.GetUserId(username);
 
                 var accounts = await _accountService.GetAccounts(userId);
-
-                if (accounts.SelectMany(a => a.Errors).Any())
-                {
-                    return BadRequest(accounts);
-                }
 
                 return Ok(accounts);
             }
@@ -96,11 +86,6 @@ namespace NakedBank.WebApi.Controllers
                 if (auth is null)
                 {
                     return BadRequest(new { message = "Username or password invalid" });
-                }
-
-                if (auth.Errors.Any())
-                {
-                    return BadRequest(auth);
                 }
 
                 return Ok(auth);

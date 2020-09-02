@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace NakedBank.Front.Services
 {
-    public interface IUserService
+    public interface INakedService
     {
         Task<IEnumerable<AccountResponse>> GetAccounts();
         Task<IEnumerable<BalanceResponse>> GetBalances(int accountId, int days = 7);
@@ -14,7 +14,7 @@ namespace NakedBank.Front.Services
         Task<TransactionResponse> SendTransaction(int accountId, TransactionRequest request);
     }
 
-    public class NakedService : IUserService
+    public class NakedService : INakedService
     {
         private IHttpService _httpService;
         private ILocalStorageService _localStorageService;
