@@ -23,7 +23,7 @@
         private bool IsValidBarCode(string barCode)
         {
             // FEBRABAN high level validation
-            return true;
+            return barCode.Length == 44;
         }
 
         public bool CanExecutePayment(decimal amount, string barCode)
@@ -42,7 +42,8 @@
                 Errors.Add(new Shared.BusinessError(nameof(barCode), "Problem validating barcode"));
             }
 
-            Balance -= amount;
+            if (!HasErrors)
+                Balance -= amount;
 
             return !this.HasErrors;
         }
@@ -51,7 +52,8 @@
         {
             // Some special rule for Deposit
 
-            Balance += amount;
+            if (!HasErrors)
+                Balance += amount;
 
             return !this.HasErrors;
         }
@@ -67,7 +69,8 @@
 
             // Some special rule for Withdraw
 
-            Balance -= amount;
+            if(!HasErrors)
+                Balance -= amount;
 
             return !this.HasErrors;
         }
