@@ -25,8 +25,8 @@ NakedBank.Infrastructure | Data Layer, DbContext and Repositories
 NakedBank.Shared | Common DTOs
 NakedBank.WebApi | API Project
 NakedBank.Front | Blazor SPA
-NakedBank.Application.Tests | Test Solution
-NakedBank.Domain.Tests | Test Solution
+NakedBank.Application.Tests | Test Project
+NakedBank.Domain.Tests | Test Project
 
 ## Tests
 ![nakedbank_tests](https://user-images.githubusercontent.com/1196314/92039307-3f62ef80-ed4b-11ea-8acf-e1060d01fcc4.PNG)
@@ -42,8 +42,8 @@ With Docker installed, just open the solution on VS and run it on the default "D
 ![docker_naked](https://user-images.githubusercontent.com/1196314/91937111-a76ff200-ecc7-11ea-984c-62a756d74d73.PNG)
 
 ### Running the front-end:
-According with the address set for the back-end, the Blazor front end will require to have it's appsettings.json changed accordly.
-Find the file at ~\NakedBank.Front\wwwroot\appsettings.json and update it
+The Blazor front end will require to have it's appsettings.json changed accordly with the address set for the backend. 
+You find the file at ~\NakedBank.Front\wwwroot\appsettings.json and update it
 
 ### What's missing
 + Auth Token Recycling
