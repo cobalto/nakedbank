@@ -43,7 +43,7 @@ With Docker installed, just open the solution on VS and run it on the default "D
 
 ### Running the front-end:
 The Blazor front end will require to have it's appsettings.json changed accordly with the address set for the backend. 
-You find the file at ~\NakedBank.Front\wwwroot\appsettings.json and update it
+You can find the file ~\NakedBank.Front\wwwroot\appsettings.json
 
 ### What's missing
 + Auth Token Recycling
@@ -51,7 +51,7 @@ You find the file at ~\NakedBank.Front\wwwroot\appsettings.json and update it
 + User Profile Page
 + Parametrization of some "magic strings"
 + Better use of the Domain models, too much control on the services logic
-+ Better control of some visual components when not logged in (Blazor Webassembly right now stil has some problems updating components when values change)
++ Better control of some visual components when not logged in (Blazor Webassembly right now still has some problems updating components when values change)
 + Charts (most of them are paid, Chart.js has a port to Blazor but only documentation for the Server-Side version)
 + More tests
 
