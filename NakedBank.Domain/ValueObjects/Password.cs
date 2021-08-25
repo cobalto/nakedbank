@@ -27,7 +27,7 @@ namespace NakedBank.Domain
                 throw new BusinessException("Invalid Password");
             }
 
-            using (var sha = new System.Security.Cryptography.SHA256Managed())
+            using (var sha = System.Security.Cryptography.SHA512.Create())
             {
                 byte[] textData = System.Text.Encoding.UTF8.GetBytes(password);
                 byte[] hash = sha.ComputeHash(textData);

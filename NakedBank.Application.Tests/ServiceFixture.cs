@@ -16,11 +16,6 @@ namespace NakedBank.Application.Tests
 {
     public class ServiceFixture
     {
-        private IUserRepository _userRepository;
-        private IAccountRepository accountRepository;
-        private IConfigurationRepository _configurationRepository;
-
-        
         public IUserService UserService;
         public IAccountService AccountService;
 

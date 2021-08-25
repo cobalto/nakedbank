@@ -58,7 +58,7 @@ namespace NakedBank.Front.Services
 
                 return result;
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 throw;
             }
