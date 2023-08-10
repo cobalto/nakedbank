@@ -1,9 +1,5 @@
-﻿using NakedBank.Domain;
-using NakedBank.Shared.Models.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
+using NakedBank.Domain;
 using Xunit;
 
 namespace NakedBank.Application.Tests
