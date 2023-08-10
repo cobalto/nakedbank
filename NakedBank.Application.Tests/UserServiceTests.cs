@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Xunit;
-using Moq;
-using NakedBank.Application.Repositories;
-using NakedBank.Application.Interfaces;
-using NakedBank.Application.Services;
-using AutoMapper;
-using Microsoft.Extensions.DependencyInjection;
+﻿using System.Linq;
 using NakedBank.Domain;
 using System.Linq;
 using System.Threading.Tasks;
