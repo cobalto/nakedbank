@@ -1,6 +1,6 @@
-﻿using Coravel.Invocable;
+﻿using System.Threading.Tasks;
+using Coravel.Invocable;
 using NakedBank.Application.Interfaces;
-using System.Threading.Tasks;
 
 namespace NakedBank.WebApi.Invocables
 {

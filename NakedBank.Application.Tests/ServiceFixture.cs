@@ -1,16 +1,14 @@
-﻿using AutoMapper;
-using Castle.DynamicProxy.Generators.Emitters.SimpleAST;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
 using NakedBank.Application.Interfaces;
 using NakedBank.Application.Repositories;
 using NakedBank.Application.Services;
 using NakedBank.Domain;
 using NakedBank.Shared.Models;
-using NakedBank.Shared.Models.Responses;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using NSubstitute;
 
 namespace NakedBank.Application.Tests
 {
@@ -62,58 +60,65 @@ namespace NakedBank.Application.Tests
 
             service.AddSingleton<IUserRepository>(_ =>
             {
-                Mock<IUserRepository> mockUserRepository = new Mock<IUserRepository>();
+                var mockUserRepository = Substitute.For<IUserRepository>();
 
-                mockUserRepository.Setup(x => x.GetUser(It.IsAny<string>())).ReturnsAsync(DefaultUser);
-                mockUserRepository.Setup(x => x.UpdateUserLastAccess(It.IsAny<string>())).Verifiable();
-                mockUserRepository.Setup(x => x.SaveToken(It.IsAny<Token>())).Verifiable();
+                mockUserRepository.GetUser(Arg.Any<string>()).Returns(Task.FromResult(DefaultUser));
 
-                return mockUserRepository.Object;
+                return mockUserRepository;
             });
 
             service.AddSingleton<IAccountRepository>(_ =>
             {
-                Mock<IAccountRepository> mockAccountRepository = new Mock<IAccountRepository>();
+                //Mock<IAccountRepository> mockAccountRepository = new Mock<IAccountRepository>();
+                var mockAccountRepository = Substitute.For<IAccountRepository>();
 
-                mockAccountRepository.Setup(x => x.GetAccount(It.IsAny<int>(), It.IsAny<int>()))
-                    .ReturnsAsync((int user, int acc) => new Account(acc, 1, "001", 500, 1));
+                mockAccountRepository.GetAccount(Arg.Any<int>(), Arg.Any<int>())
+                    .Returns(callInfo =>
+                    {
+                        int user = callInfo.ArgAt<int>(0);
+                        int acc = callInfo.ArgAt<int>(1);
 
-                mockAccountRepository.Setup(x => x.GetAccounts(It.IsAny<int>()))
-                    .ReturnsAsync(DefaultAccounts);
+                        return Task.FromResult(new Account(acc, 1, "001", 500, 1));
+                    });
 
-                mockAccountRepository.Setup(x => x.GetBalances(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                    .ReturnsAsync(DefaultBalances);
+                mockAccountRepository.GetAccounts(Arg.Any<int>())
+                    .Returns((IEnumerable<Account>)Task.FromResult(DefaultAccounts));
 
-                mockAccountRepository.Setup(x => x.GetTransactions(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()))
-                    .ReturnsAsync(DefaultTransactions);
+                mockAccountRepository.GetBalances(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<int>())
+                    .Returns(Task.FromResult(DefaultBalances));
 
+                mockAccountRepository.GetTransactions(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<int>())
+                    .Returns(Task.FromResult(DefaultTransactions));
 
-                mockAccountRepository.Setup(x => x.ExecuteBalanceUpdate()).Verifiable();
-                mockAccountRepository.Setup(x => x.UpdateBalance(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<decimal>())).Verifiable();
-                mockAccountRepository.Setup(x => x.ExecuteBalanceUpdate()).Verifiable();
-
-                return mockAccountRepository.Object;
+                return mockAccountRepository;
             });
 
             service.AddSingleton<ITransactionRepository>(_ =>
             {
-                Mock<ITransactionRepository> mockTransactionRepository = new Mock<ITransactionRepository>();
+                var mockTransactionRepository = Substitute.For<ITransactionRepository>();
 
-                mockTransactionRepository.Setup(x => x.ExecuteTransaction(
-                    It.IsAny<TransactionType>(), It.IsAny<int>(), It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<string>()))
-                        .ReturnsAsync((TransactionType type, int acc, decimal amount, decimal balance, string barcode) =>
-                            new Transaction(Guid.NewGuid(), type, amount, DateTime.UtcNow, acc));
+                mockTransactionRepository.ExecuteTransaction(Arg.Any<TransactionType>(), Arg.Any<int>(), Arg.Any<decimal>(), Arg.Any<decimal>(), Arg.Any<string>())
+                    .Returns(callInfo =>
+                    {
+                        TransactionType type = callInfo.ArgAt<TransactionType>(0);
+                        int acc = callInfo.ArgAt<int>(1);
+                        decimal amount = callInfo.ArgAt<decimal>(2);
+                        decimal balance = callInfo.ArgAt<decimal>(3);
+                        string barcode = callInfo.ArgAt<string>(4);
 
-                return mockTransactionRepository.Object;
+                        return Task.FromResult(new Transaction(Guid.NewGuid(), type, amount, DateTime.UtcNow, acc));
+                    });
+
+                return mockTransactionRepository;
             });
 
             service.AddSingleton<IConfigurationRepository>(_ =>
             {
-                Mock<IConfigurationRepository> mockConfigurationRepository = new Mock<IConfigurationRepository>();
+                var mockConfigurationRepository = Substitute.For<IConfigurationRepository>();
 
-                mockConfigurationRepository.Setup(x => x.GetConfig(It.IsAny<string>())).Returns(DEFAULT_SECRET);
+                mockConfigurationRepository.GetConfig(Arg.Any<string>()).Returns(DEFAULT_SECRET);
 
-                return mockConfigurationRepository.Object;
+                return mockConfigurationRepository;
             });
 
             var provider = service.BuildServiceProvider();
