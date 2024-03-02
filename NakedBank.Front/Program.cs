@@ -4,6 +4,7 @@ using NakedBank.Front.Services;
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace NakedBank.Front
 {
@@ -12,7 +13,8 @@ namespace NakedBank.Front
         public static async Task Main(string[] args)
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
-            builder.RootComponents.Add<App>("app");
+            builder.RootComponents.Add<App>("#app");
+            builder.RootComponents.Add<HeadOutlet>("head::after");
 
             builder.Services
                 .AddScoped<IAuthenticationService, AuthenticationService>()
@@ -22,9 +24,7 @@ namespace NakedBank.Front
 
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["apiUrl"]) });
 
-            var host = builder.Build();
-
-            await host.RunAsync();
+            await builder.Build().RunAsync();
         }
     }
 }

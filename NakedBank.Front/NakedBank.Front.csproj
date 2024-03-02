@@ -3,16 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
-    <UserSecretsId>8d5727fd-85fa-4370-8c00-504d02eef563</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Services\AuthenticationService.cs~RFd8f300.TMP" />
+    <None Remove="Services\AuthenticationService.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.10" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.10" PrivateAssets="all" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.1" />
   </ItemGroup>
