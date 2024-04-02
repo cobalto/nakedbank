@@ -1,27 +1,33 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30413.136
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.WebApi", "NakedBank.WebApi\NakedBank.WebApi.csproj", "{805919EC-A4CE-47C3-96AA-5991299A55BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.WebApi", "src\NakedBank.WebApi\NakedBank.WebApi.csproj", "{805919EC-A4CE-47C3-96AA-5991299A55BF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Domain", "NakedBank.Domain\NakedBank.Domain.csproj", "{DE371F45-F026-4121-9CB4-98D176E375EA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Domain", "src\NakedBank.Domain\NakedBank.Domain.csproj", "{DE371F45-F026-4121-9CB4-98D176E375EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Application", "NakedBank.Application\NakedBank.Application.csproj", "{5E7212A2-AC29-4A1D-A934-18695D6B7941}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Application", "src\NakedBank.Application\NakedBank.Application.csproj", "{5E7212A2-AC29-4A1D-A934-18695D6B7941}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Shared", "NakedBank.Shared\NakedBank.Shared.csproj", "{92B408DB-9BDC-4822-BE3D-D905CE53D5A1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Shared", "src\NakedBank.Shared\NakedBank.Shared.csproj", "{92B408DB-9BDC-4822-BE3D-D905CE53D5A1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Infrastructure", "NakedBank.Infrastructure\NakedBank.Infrastructure.csproj", "{1F790913-F244-4EB8-8669-9BA43CB680D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Infrastructure", "src\NakedBank.Infrastructure\NakedBank.Infrastructure.csproj", "{1F790913-F244-4EB8-8669-9BA43CB680D8}"
 EndProject
-Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3B1799A2-D9DD-4B90-B32B-730D079324BF}"
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "deploy\docker-compose.dcproj", "{3B1799A2-D9DD-4B90-B32B-730D079324BF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FB7C9697-09E3-412B-9249-20365D98B3F6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FB7C9697-09E3-412B-9249-20365D98B3F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NakedBank.Application.Tests", "NakedBank.Application.Tests\NakedBank.Application.Tests.csproj", "{B8B45805-ED9B-4A5D-B711-4866BAFC35AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Application.Tests", "tests\NakedBank.Application.Tests\NakedBank.Application.Tests.csproj", "{B8B45805-ED9B-4A5D-B711-4866BAFC35AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NakedBank.Domain.Tests", "NakedBank.Domain.Tests\NakedBank.Domain.Tests.csproj", "{BD5E20DD-074D-4FDE-A826-56FFA0A392E2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Domain.Tests", "tests\NakedBank.Domain.Tests\NakedBank.Domain.Tests.csproj", "{BD5E20DD-074D-4FDE-A826-56FFA0A392E2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NakedBank.Front", "NakedBank.Front\NakedBank.Front.csproj", "{839EE5C1-9C8B-491A-9B94-39BC38FBE4C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Front", "src\NakedBank.Front\NakedBank.Front.csproj", "{839EE5C1-9C8B-491A-9B94-39BC38FBE4C9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{86AC811C-C7EF-4F6B-8547-182002ADEE4C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NakedBank.Api", "src\NakedBank.Api\NakedBank.Api.csproj", "{2C802727-46F3-46D4-B9A1-B048631DE389}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deploy", "deploy", "{C551E0D6-A886-4065-8E66-35B9838D39EE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,13 +71,25 @@ Global
 		{839EE5C1-9C8B-491A-9B94-39BC38FBE4C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{839EE5C1-9C8B-491A-9B94-39BC38FBE4C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{839EE5C1-9C8B-491A-9B94-39BC38FBE4C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C802727-46F3-46D4-B9A1-B048631DE389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C802727-46F3-46D4-B9A1-B048631DE389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C802727-46F3-46D4-B9A1-B048631DE389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C802727-46F3-46D4-B9A1-B048631DE389}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{805919EC-A4CE-47C3-96AA-5991299A55BF} = {86AC811C-C7EF-4F6B-8547-182002ADEE4C}
+		{DE371F45-F026-4121-9CB4-98D176E375EA} = {86AC811C-C7EF-4F6B-8547-182002ADEE4C}
+		{5E7212A2-AC29-4A1D-A934-18695D6B7941} = {86AC811C-C7EF-4F6B-8547-182002ADEE4C}
+		{92B408DB-9BDC-4822-BE3D-D905CE53D5A1} = {86AC811C-C7EF-4F6B-8547-182002ADEE4C}
+		{1F790913-F244-4EB8-8669-9BA43CB680D8} = {86AC811C-C7EF-4F6B-8547-182002ADEE4C}
+		{3B1799A2-D9DD-4B90-B32B-730D079324BF} = {C551E0D6-A886-4065-8E66-35B9838D39EE}
 		{B8B45805-ED9B-4A5D-B711-4866BAFC35AD} = {FB7C9697-09E3-412B-9249-20365D98B3F6}
 		{BD5E20DD-074D-4FDE-A826-56FFA0A392E2} = {FB7C9697-09E3-412B-9249-20365D98B3F6}
+		{839EE5C1-9C8B-491A-9B94-39BC38FBE4C9} = {86AC811C-C7EF-4F6B-8547-182002ADEE4C}
+		{2C802727-46F3-46D4-B9A1-B048631DE389} = {86AC811C-C7EF-4F6B-8547-182002ADEE4C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {94D1F4E1-D5FC-419B-B4CF-7A2F70864203}

@@ -1,11 +1,20 @@
 version: '3.4'
 
 services:
+  nakedbank.api:
+    image: ${DOCKER_REGISTRY-}nakedbankapi
+    build:
+      context: .
+      dockerfile: src/NakedBank.Api/Dockerfile
+    depends_on:
+      - db
+    networks:
+      - naked-net
   nakedbank.webapi:
     image: ${DOCKER_REGISTRY-}nakedbankwebapi
     build:
       context: .
-      dockerfile: NakedBank.WebApi/Dockerfile
+      dockerfile: src/NakedBank.WebApi/Dockerfile
     depends_on:
       - db
     networks:
