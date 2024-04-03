@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option csharp_namespace = "NakedBank.Api.v2";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "Protos/v2/shared.proto";
+
+package NakedBank.Api.v2;
+
+service AccountServicer {
+  rpc GetBalances (GetBalanceRequest) returns (BalanceResponse) {
+    option (google.api.http) = {
+      get: "/api/v2/accounts/{accountId}/balances"
+    };
+  }
+  rpc GetRecentTransactions (GetTransactionRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      get: "/api/v2/accounts/{accountId}/transactions"
+    };
+  }
+  rpc PostTransactionAsync (PostTransactionRequest) returns (TransactionResponse) {
+    option (google.api.http) = {
+      post: "/api/v2/accounts/{accountId}/transactions"
+    };
+  }
+}
+
+message GetBalanceRequest {
+  int32 account_id = 1;
+  int32 days = 2;
+}
+
+message BalanceResponse {
+  int32 balance_id = 1;
+  Amount amount = 2;
+  google.protobuf.Timestamp timestamp = 3;
+  int32 account_id = 4;
+  google.protobuf.Timestamp execution_time = 5;
+  repeated string errors = 6;
+}
+
+message GetTransactionRequest {
+  int32 account_id = 1;
+  int32 days = 2;
+}
+
+message PostTransactionRequest {
+  string account_id = 1;
+  TransactionType transaction_type = 2;
+  Amount amount = 3;
+  string barcode = 4;
+}
+
+message TransactionResponse {
+  string transaction_id = 1;
+  TransactionType transaction_type = 2;
+  Amount amount = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  int32 account_id = 5;
+  google.protobuf.Timestamp execution_time = 6;
+  repeated string errors = 7;
+}

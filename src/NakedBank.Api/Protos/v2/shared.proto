@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "NakedBank.Api.v2";
+
+package NakedBank.Api.v2;
+
+enum TransactionType {
+  PAYMENT = 0;
+  DEPOSIT = 1;
+  WITHDRAW = 2;
+}
+
+message Amount {
+  int32 amount = 1;
+  int32 decimal_positions = 2;
+  string currency_code = 3;
+}

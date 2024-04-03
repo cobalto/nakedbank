@@ -1,21 +1,45 @@
 syntax = "proto3";
 
-option csharp_namespace = "NakedBank.Api";
+option csharp_namespace = "NakedBank.Api.v2";
 
-package greet;
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 
-// The greeting service definition.
+package NakedBank.Api.v2;
+
 service Greeter {
-  // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloReply);
+  rpc SayHelloOnlyName (HelloOnlyNameRequest) returns (HelloReply) {
+    option (google.api.http) = {
+      get: "/v1/greeter/{name}"
+    };
+  }
+  rpc SayHelloFullName (HelloFullNameRequest) returns (HelloReply) {
+    option (google.api.http) = {
+      post: "/v1/greeter"
+    };
+  }
 }
 
-// The request message containing the user's name.
-message HelloRequest {
+// The GET request message containing the user's data.
+message HelloOnlyNameRequest {
+  // Name to say hello to.
   string name = 1;
+}
+
+// The POST request message containing the user's data.
+message HelloFullNameRequest {
+  // Name to say hello to.
+  string name = 1;
+
+  // The family you are part of.
+  string surname = 2;
 }
 
 // The response message containing the greetings.
 message HelloReply {
+  // Hello reply message.
   string message = 1;
+
+  // Timestamp of the reply.
+  google.protobuf.Timestamp timestamp = 2;
 }
