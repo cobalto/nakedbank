@@ -45,10 +45,10 @@ namespace NakedBank.Infrastructure
                     {
                         Login = "12345678900",
                         Password = "02C642C83E3979E94D76F39A01BEB91E5AAB8D135DD4F6A7FCF35BCF75545F0F",
-                        FirstName = "Daniel",
-                        LastName = "Pessoa",
-                        EmailAddress = "daniel@cobalto.dev",
-                        PhoneNumber = "+55 21 999-123-708",
+                        FirstName = "Mary",
+                        LastName = "Doe",
+                        EmailAddress = "mary@doe.com",
+                        PhoneNumber = "+1 12 987-654-321",
                         Active = true,
                         LastAccessAt = DateTime.UtcNow
                     },

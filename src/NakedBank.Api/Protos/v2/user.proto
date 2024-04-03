@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+option csharp_namespace = "NakedBank.Api.v2";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "Protos/v2/shared.proto";
+
+package NakedBank.Api.v2;
+
+service UserServicer {
+  rpc GetCurrentUser (google.protobuf.Empty) returns (ProfileResponse) {
+    option (google.api.http) = {
+      get: "/api/v2/user/profile"
+    };
+  }
+  rpc GetUserAccounts (google.protobuf.Empty) returns (AccountResponse) {
+    option (google.api.http) = {
+      get: "/api/v2/user/accounts"
+    };
+  }
+  rpc Authenticate (AuthRequest) returns (AuthResponse) {
+    option (google.api.http) = {
+      post: "/api/v2/user/authenticate"
+    };
+  }
+}
+
+message ProfileResponse {
+  int32 user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string login = 4;
+  string email_address = 5;
+  string phone_number = 6;
+  google.protobuf.Timestamp last_access_at = 7;
+  google.protobuf.Timestamp execution_time = 8;
+  repeated string errors = 9;
+}
+
+message AccountResponse {
+  int32 account_id = 1;
+  int32 branch_id = 2;
+  string account_number = 3;
+  Amount balance = 4;
+  google.protobuf.Timestamp execution_time = 5;
+  repeated string errors = 6;
+}
+
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  int32 user_id = 1;
+  string login = 2;
+  string token = 3;
+}
