@@ -10,6 +10,7 @@ using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
 using NakedBank.Domain;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace NakedBank.Application.Tests
 {
@@ -23,7 +24,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void AuthenticationMustSucceed()
+        public async Task AuthenticationMustSucceed()
         {
             User user = _fixture.DefaultUser;
 
@@ -36,7 +37,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void AuthenticationMustFail()
+        public async Task AuthenticationMustFail()
         {
             User user = _fixture.DefaultUser;
 
@@ -48,7 +49,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void GetUserProfileMustSucceed()
+        public async Task GetUserProfileMustSucceed()
         {
             User user = _fixture.DefaultUser;
             
@@ -61,7 +62,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void GetUserIdMustSucceed()
+        public async Task GetUserIdMustSucceed()
         {
             User user = _fixture.DefaultUser;
 
