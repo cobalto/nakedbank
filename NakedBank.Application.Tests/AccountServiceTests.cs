@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace NakedBank.Application.Tests
@@ -20,7 +21,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void GetAccountsMustSucceed()
+        public async Task GetAccountsMustSucceed()
         {
             User user = _fixture.DefaultUser;
 
@@ -30,7 +31,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void GetBalancesMustSucceed()
+        public async Task GetBalancesMustSucceed()
         {
             User user = _fixture.DefaultUser;
             Account account = _fixture.DefaultAccounts.FirstOrDefault();
@@ -41,7 +42,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void GetTransactionsMustSucceed()
+        public async Task GetTransactionsMustSucceed()
         {
             User user = _fixture.DefaultUser;
             Account account = _fixture.DefaultAccounts.FirstOrDefault();
@@ -52,7 +53,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void TransactionPaymentMustSucceed()
+        public async Task TransactionPaymentMustSucceed()
         {
             User user = _fixture.DefaultUser;
             Account account = _fixture.DefaultAccounts.FirstOrDefault();
@@ -64,7 +65,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void TransactionDepositMustSucceed()
+        public async Task TransactionDepositMustSucceed()
         {
             User user = _fixture.DefaultUser;
             Account account = _fixture.DefaultAccounts.FirstOrDefault();
@@ -76,7 +77,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void TransactionWithdrawMustSucceed()
+        public async Task TransactionWithdrawMustSucceed()
         {
             User user = _fixture.DefaultUser;
             Account account = _fixture.DefaultAccounts.FirstOrDefault();
@@ -88,7 +89,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void TransactionPaymentBarcodeMustFail()
+        public async Task TransactionPaymentBarcodeMustFail()
         {
             User user = _fixture.DefaultUser;
             Account account = _fixture.DefaultAccounts.FirstOrDefault();
@@ -101,7 +102,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void TransactionPaymentFoundsMustFail()
+        public async Task TransactionPaymentFoundsMustFail()
         {
             User user = _fixture.DefaultUser;
             Account account = _fixture.DefaultAccounts.FirstOrDefault();
@@ -114,7 +115,7 @@ namespace NakedBank.Application.Tests
         }
 
         [Fact]
-        public async void TransactionWithdrawFoundsMustFail()
+        public async Task TransactionWithdrawFoundsMustFail()
         {
             User user = _fixture.DefaultUser;
             Account account = _fixture.DefaultAccounts.FirstOrDefault();
