@@ -1,13 +1,12 @@
 ﻿using System.Linq;
-using NakedBank.Domain;
-using System.Linq;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace NakedBank.Application.Tests
 {
     public class UserServiceTests : IClassFixture<ServiceFixture>
     {
-        ServiceFixture _fixture;
+        private readonly ServiceFixture _fixture;
 
         public UserServiceTests(ServiceFixture fixture)
         {
@@ -17,7 +16,7 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task AuthenticationMustSucceed()
         {
-            User user = _fixture.DefaultUser;
+            var user = _fixture.DefaultUser;
 
             var authResult = await _fixture.UserService.Authenticate(user.Login.ToString(), "naked1234naked");
 
@@ -30,19 +29,19 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task AuthenticationMustFail()
         {
-            User user = _fixture.DefaultUser;
+            var user = _fixture.DefaultUser;
 
             var authResult = await _fixture.UserService.Authenticate(user.Login.ToString(), "naked12345naked");
 
             Assert.Null(authResult.Token);
             Assert.NotEmpty(authResult.Errors);
-            Assert.Contains("not found", authResult.Errors.FirstOrDefault().Message);
+            Assert.Contains("not found", authResult.Errors.FirstOrDefault()?.Message);
         }
 
         [Fact]
         public async Task GetUserProfileMustSucceed()
         {
-            User user = _fixture.DefaultUser;
+            var user = _fixture.DefaultUser;
             
             var userResult = await _fixture.UserService.GetUserProfile(user.Login.ToString());
 
@@ -55,12 +54,11 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task GetUserIdMustSucceed()
         {
-            User user = _fixture.DefaultUser;
+            var user = _fixture.DefaultUser;
 
             var resultId = await _fixture.UserService.GetUserId(user.Login.ToString());
 
             Assert.Equal(user.UserId, resultId);
         }
-        
     }
 }

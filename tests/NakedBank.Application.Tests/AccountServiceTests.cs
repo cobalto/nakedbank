@@ -1,9 +1,4 @@
-﻿using NakedBank.Domain;
-using NakedBank.Shared.Models.Responses;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -11,9 +6,9 @@ namespace NakedBank.Application.Tests
 {
     public class AccountServiceTests : IClassFixture<ServiceFixture>
     {
-        ServiceFixture _fixture;
-        public const string BARCODE_OK = "12345678901234567890123456789012345678901234";
-        public const string BARCODE_FAIL = "1234567890123456789012345678901234567890123";
+        private readonly ServiceFixture _fixture;
+        private const string BarcodeOk = "12345678901234567890123456789012345678901234";
+        private const string BarcodeFail = "1234567890123456789012345678901234567890123";
 
         public AccountServiceTests(ServiceFixture fixture)
         {
@@ -23,7 +18,7 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task GetAccountsMustSucceed()
         {
-            User user = _fixture.DefaultUser;
+            var user = _fixture.DefaultUser;
 
             var results = await _fixture.AccountService.GetAccounts(user.UserId);
 
@@ -33,8 +28,8 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task GetBalancesMustSucceed()
         {
-            User user = _fixture.DefaultUser;
-            Account account = _fixture.DefaultAccounts.FirstOrDefault();
+            var user = _fixture.DefaultUser;
+            var account = _fixture.DefaultAccounts.FirstOrDefault();
 
             var results = await _fixture.AccountService.GetBalances(user.UserId, account.AccountId, 5);
 
@@ -44,8 +39,8 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task GetTransactionsMustSucceed()
         {
-            User user = _fixture.DefaultUser;
-            Account account = _fixture.DefaultAccounts.FirstOrDefault();
+            var user = _fixture.DefaultUser;
+            var account = _fixture.DefaultAccounts.FirstOrDefault();
 
             var results = await _fixture.AccountService.GetTransactions(user.UserId, account.AccountId, 5);
 
@@ -55,11 +50,11 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task TransactionPaymentMustSucceed()
         {
-            User user = _fixture.DefaultUser;
-            Account account = _fixture.DefaultAccounts.FirstOrDefault();
+            var user = _fixture.DefaultUser;
+            var account = _fixture.DefaultAccounts.FirstOrDefault();
 
             var results = await _fixture.AccountService.ExecuteTransaction(Shared.Models.TransactionType.Payment,
-                user.UserId, account.AccountId, 200, BARCODE_OK);
+                user.UserId, account.AccountId, 200, BarcodeOk);
 
             Assert.Empty(results.Errors);
         }
@@ -67,8 +62,8 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task TransactionDepositMustSucceed()
         {
-            User user = _fixture.DefaultUser;
-            Account account = _fixture.DefaultAccounts.FirstOrDefault();
+            var user = _fixture.DefaultUser;
+            var account = _fixture.DefaultAccounts.FirstOrDefault();
 
             var results = await _fixture.AccountService.ExecuteTransaction(Shared.Models.TransactionType.Deposit,
                 user.UserId, account.AccountId, 200);
@@ -79,8 +74,8 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task TransactionWithdrawMustSucceed()
         {
-            User user = _fixture.DefaultUser;
-            Account account = _fixture.DefaultAccounts.FirstOrDefault();
+            var user = _fixture.DefaultUser;
+            var account = _fixture.DefaultAccounts.FirstOrDefault();
 
             var results = await _fixture.AccountService.ExecuteTransaction(Shared.Models.TransactionType.Withdraw,
                 user.UserId, account.AccountId, 200);
@@ -91,40 +86,40 @@ namespace NakedBank.Application.Tests
         [Fact]
         public async Task TransactionPaymentBarcodeMustFail()
         {
-            User user = _fixture.DefaultUser;
-            Account account = _fixture.DefaultAccounts.FirstOrDefault();
+            var user = _fixture.DefaultUser;
+            var account = _fixture.DefaultAccounts.FirstOrDefault();
 
             var results = await _fixture.AccountService.ExecuteTransaction(Shared.Models.TransactionType.Payment,
-                user.UserId, account.AccountId, 200, BARCODE_FAIL);
+                user.UserId, account.AccountId, 200, BarcodeFail);
 
             Assert.NotEmpty(results.Errors);
-            Assert.Contains("barcode", results.Errors.FirstOrDefault().Message);
+            Assert.Contains("barcode", results.Errors.FirstOrDefault()?.Message);
         }
 
         [Fact]
         public async Task TransactionPaymentFoundsMustFail()
         {
-            User user = _fixture.DefaultUser;
-            Account account = _fixture.DefaultAccounts.FirstOrDefault();
+            var user = _fixture.DefaultUser;
+            var account = _fixture.DefaultAccounts.FirstOrDefault();
 
             var results = await _fixture.AccountService.ExecuteTransaction(Shared.Models.TransactionType.Payment,
-                user.UserId, account.AccountId, 1200, BARCODE_OK);
+                user.UserId, account.AccountId, 1200, BarcodeOk);
 
             Assert.NotEmpty(results.Errors);
-            Assert.Contains("founds", results.Errors.FirstOrDefault().Message);
+            Assert.Contains("founds", results.Errors.FirstOrDefault()?.Message);
         }
 
         [Fact]
         public async Task TransactionWithdrawFoundsMustFail()
         {
-            User user = _fixture.DefaultUser;
-            Account account = _fixture.DefaultAccounts.FirstOrDefault();
+            var user = _fixture.DefaultUser;
+            var account = _fixture.DefaultAccounts.FirstOrDefault();
 
             var results = await _fixture.AccountService.ExecuteTransaction(Shared.Models.TransactionType.Withdraw,
                 user.UserId, account.AccountId, 1200);
 
             Assert.NotEmpty(results.Errors);
-            Assert.Contains("founds", results.Errors.FirstOrDefault().Message);
+            Assert.Contains("founds", results.Errors.FirstOrDefault()?.Message);
         }
     }
 }

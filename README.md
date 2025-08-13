@@ -2,7 +2,7 @@
 > A simple full stack banking application.
 
 ### Stack Composition
-+ .Net Core 3.1 [link](https://dotnet.microsoft.com/)
++ .Net 9 [link](https://dotnet.microsoft.com/)
 + Entity Framework Core [link](https://docs.microsoft.com/pt-br/ef/core/)
 + Blazor WebAssembly [link](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)
 + Swagger [link](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio)
@@ -67,4 +67,4 @@ You can find the file ~\NakedBank.Front\wwwroot\appsettings.json
 ![nakedbank_fron6](https://user-images.githubusercontent.com/1196314/91937109-a6d75b80-ecc7-11ea-9344-90ea971a3824.PNG)
 
 > DISCLAIMER:  
-> YES. The name is a [silly joke](https://blog.nubank.com.br/por-que-nubank-chama-nubank/) with a purple brazilian bank
+> YES. The name is a [silly joke](https://web.archive.org/web/20250209214501/https://blog.nubank.com.br/por-que-nubank-chama-nubank/) with a purple brazilian bank

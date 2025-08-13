@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NakedBank.Application.Interfaces;
 using NakedBank.Application.Repositories;
 using NakedBank.Application.Services;
@@ -14,34 +16,34 @@ namespace NakedBank.Application.Tests
 {
     public class ServiceFixture
     {
-        public IUserService UserService;
-        public IAccountService AccountService;
+        public readonly IUserService UserService;
+        public readonly IAccountService AccountService;
 
-        public User DefaultUser = new User(
+        public readonly User DefaultUser = new User(
                     1, "John", "Smith", new Login("12312312300"), new Password("naked1234naked"),
                     new Email("john@smith.com"), new PhoneNumber("+5551123456789"), DateTime.UtcNow);
 
-        public List<Account> DefaultAccounts = new List<Account>()
-        {
+        public readonly IEnumerable<Account> DefaultAccounts = (List<Account>)
+        [
             new Account(1, 1, "001", 100, 1),
             new Account(1, 2, "002", 200, 1)
-        };
+        ];
 
-        public IEnumerable<Balance> DefaultBalances = new List<Balance>()
-        {
+        public readonly IEnumerable<Balance> DefaultBalances = (List<Balance>)
+        [
             new Balance(1, 100, DateTime.UtcNow.AddDays(-3), 1),
             new Balance(1, 75, DateTime.UtcNow.AddDays(-2), 1),
-            new Balance(1, 25, DateTime.UtcNow.AddDays(-1), 1),
-        };
+            new Balance(1, 25, DateTime.UtcNow.AddDays(-1), 1)
+        ];
 
-        public IEnumerable<Transaction> DefaultTransactions = new List<Transaction>()
+        public readonly IEnumerable<Transaction> DefaultTransactions = new List<Transaction>()
         {
             new Transaction(Guid.NewGuid(), TransactionType.Deposit, 100, DateTime.UtcNow, 1),
             new Transaction(Guid.NewGuid(), TransactionType.Payment, 50, DateTime.UtcNow.AddDays(-1), 1),
             new Transaction(Guid.NewGuid(), TransactionType.Withdraw, 25, DateTime.UtcNow.AddDays(-2), 1),
         };
 
-        private const string DEFAULT_SECRET = "xEzq98jGYb@DpaNsH9G?uT4KtsY-7B2P";
+        private const string DefaultSecret = "xEzq98jGYb@DpaNsH9G?uT4KtsY-7B2P";
 
         public ServiceFixture()
         {
@@ -49,10 +51,10 @@ namespace NakedBank.Application.Tests
 
             var config = new MapperConfiguration(cfg =>
             {
-                cfg.AddProfile(new ApplicationProfile());
-            });
+                cfg.AddProfile<NakedBank.Application.ApplicationProfile>();
+            }, Substitute.For<ILoggerFactory>());
 
-            IMapper mapper = config.CreateMapper();
+            var mapper = config.CreateMapper();
             service.AddSingleton(mapper);
 
             service.AddTransient<IUserService, UserService>();
@@ -69,7 +71,6 @@ namespace NakedBank.Application.Tests
 
             service.AddSingleton<IAccountRepository>(_ =>
             {
-                //Mock<IAccountRepository> mockAccountRepository = new Mock<IAccountRepository>();
                 var mockAccountRepository = Substitute.For<IAccountRepository>();
 
                 mockAccountRepository.GetAccount(Arg.Any<int>(), Arg.Any<int>())
@@ -82,7 +83,7 @@ namespace NakedBank.Application.Tests
                     });
 
                 mockAccountRepository.GetAccounts(Arg.Any<int>())
-                    .Returns((IEnumerable<Account>)Task.FromResult(DefaultAccounts));
+                    .Returns(Task.FromResult(DefaultAccounts));
 
                 mockAccountRepository.GetBalances(Arg.Any<int>(), Arg.Any<int>(), Arg.Any<int>())
                     .Returns(Task.FromResult(DefaultBalances));
@@ -100,11 +101,11 @@ namespace NakedBank.Application.Tests
                 mockTransactionRepository.ExecuteTransaction(Arg.Any<TransactionType>(), Arg.Any<int>(), Arg.Any<decimal>(), Arg.Any<decimal>(), Arg.Any<string>())
                     .Returns(callInfo =>
                     {
-                        TransactionType type = callInfo.ArgAt<TransactionType>(0);
-                        int acc = callInfo.ArgAt<int>(1);
-                        decimal amount = callInfo.ArgAt<decimal>(2);
-                        decimal balance = callInfo.ArgAt<decimal>(3);
-                        string barcode = callInfo.ArgAt<string>(4);
+                        var type = callInfo.ArgAt<TransactionType>(0);
+                        var acc = callInfo.ArgAt<int>(1);
+                        var amount = callInfo.ArgAt<decimal>(2);
+                        var balance = callInfo.ArgAt<decimal>(3);
+                        var barcode = callInfo.ArgAt<string>(4);
 
                         return Task.FromResult(new Transaction(Guid.NewGuid(), type, amount, DateTime.UtcNow, acc));
                     });
@@ -116,7 +117,7 @@ namespace NakedBank.Application.Tests
             {
                 var mockConfigurationRepository = Substitute.For<IConfigurationRepository>();
 
-                mockConfigurationRepository.GetConfig(Arg.Any<string>()).Returns(DEFAULT_SECRET);
+                mockConfigurationRepository.GetConfig(Arg.Any<string>()).Returns(DefaultSecret);
 
                 return mockConfigurationRepository;
             });
