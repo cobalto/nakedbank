@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="15.1.3" />
     <ProjectReference Include="..\NakedBank.Application\NakedBank.Application.csproj" />
     <ProjectReference Include="..\NakedBank.Domain\NakedBank.Domain.csproj" />
     <ProjectReference Include="..\NakedBank.Shared\NakedBank.Shared.csproj" />
