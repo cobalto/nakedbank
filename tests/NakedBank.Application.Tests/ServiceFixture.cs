@@ -19,8 +19,10 @@ namespace NakedBank.Application.Tests
         public readonly IUserService UserService;
         public readonly IAccountService AccountService;
 
+        public const string TestUserPassword = "NakedDemoPass123";
+
         public readonly User DefaultUser = new User(
-                    1, "John", "Smith", new Login("12312312300"), new Password("naked1234naked"),
+                    1, "John", "Smith", new Login("12312312300"), new Password(TestUserPassword),
                     new Email("john@smith.com"), new PhoneNumber("+5551123456789"), DateTime.UtcNow);
 
         public readonly IEnumerable<Account> DefaultAccounts = (List<Account>)
@@ -43,7 +45,8 @@ namespace NakedBank.Application.Tests
             new Transaction(Guid.NewGuid(), TransactionType.Withdraw, 25, DateTime.UtcNow.AddDays(-2), 1),
         };
 
-        private const string DefaultSecret = "xEzq98jGYb@DpaNsH9G?uT4KtsY-7B2P";
+        // Non-production JWT signing key used only by unit tests.
+        private const string TestJwtSigningKey = "TestOnly-JwtSigningKey-NotForProduction!";
 
         public ServiceFixture()
         {
@@ -117,7 +120,7 @@ namespace NakedBank.Application.Tests
             {
                 var mockConfigurationRepository = Substitute.For<IConfigurationRepository>();
 
-                mockConfigurationRepository.GetConfig(Arg.Any<string>()).Returns(DefaultSecret);
+                mockConfigurationRepository.GetConfig(Arg.Any<string>()).Returns(TestJwtSigningKey);
 
                 return mockConfigurationRepository;
             });

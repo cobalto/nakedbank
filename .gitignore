@@ -370,3 +370,10 @@ CLAUDE.md
 
 # AI tasks
 todo_tasks/
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+appsettings.*.local.json
+**/appsettings.Development.local.json

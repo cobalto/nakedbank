@@ -32,7 +32,50 @@ NakedBank.Domain.Tests | Test Project
 ![nakedbank_tests](https://user-images.githubusercontent.com/1196314/92039307-3f62ef80-ed4b-11ea-8acf-e1060d01fcc4.PNG)
 
 ### First time setup
-With Docker installed, just open the solution on VS and run it on the default "Docker Compose" profile, the back-end should run without problems.
+
+#### Secrets and configuration
+
+Committed config files use placeholders only. Set secrets locally using one of these approaches:
+
+**Docker Compose (recommended)**
+
+```bash
+cd deploy
+cp .env.example .env
+# Edit .env with your local values, then:
+docker-compose up --build
+```
+
+Docker Compose reads `deploy/.env` and injects MySQL passwords and the JWT signing key into the database and API containers.
+
+**WebApi without Docker**
+
+Copy the example development settings and fill in your values:
+
+```bash
+cp src/NakedBank.WebApi/appsettings.Development.json.example src/NakedBank.WebApi/appsettings.Development.json
+```
+
+Or use [.NET User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets):
+
+```bash
+dotnet user-secrets set "AuthSettings:Secret" "YOUR_JWT_SIGNING_SECRET" --project src/NakedBank.WebApi
+dotnet user-secrets set "MySqlConfig:ConnectionString" "Server=localhost;Database=NakedDatabase;Uid=root;Pwd=YOUR_PASSWORD;" --project src/NakedBank.WebApi
+```
+
+Environment variables override appsettings (double underscore for nested keys):
+
+- `AuthSettings__Secret`
+- `MySqlConfig__ConnectionString`
+
+**Seeded demo user (DEBUG builds)**
+
+| Field | Value |
+|-------|-------|
+| Username | `12345678900` |
+| Password | `NakedDemoPass123` |
+
+With Docker installed, open the solution in VS and run the default "Docker Compose" profile after creating `deploy/.env`.
 
 #### The project consists of three containers:
 + Dotnet Core image built with the project

@@ -42,7 +42,7 @@ namespace NakedBank.Infrastructure
                     new User
                     {
                         Login = "12345678900",
-                        Password = "02C642C83E3979E94D76F39A01BEB91E5AAB8D135DD4F6A7FCF35BCF75545F0F",
+                        Password = "07D846F8CEB2E68BD0917E3C269A6F23D47F7486CC5A0E967A50BBAEB5F967AE",
                         FirstName = "Mary",
                         LastName = "Doe",
                         EmailAddress = "mary@doe.com",
@@ -53,7 +53,7 @@ namespace NakedBank.Infrastructure
                     new User
                     {
                         Login = "12345678901",
-                        Password = "02C642C83E3979E94D76F39A01BEB91E5AAB8D135DD4F6A7FCF35BCF75545F0F",
+                        Password = "07D846F8CEB2E68BD0917E3C269A6F23D47F7486CC5A0E967A50BBAEB5F967AE",
                         FirstName = "John",
                         LastName = "Smith",
                         EmailAddress = "john@smith.com",

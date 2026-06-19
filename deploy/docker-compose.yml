@@ -8,6 +8,8 @@ services:
       dockerfile: src/NakedBank.Api/Dockerfile
     depends_on:
       - db
+    environment:
+      AuthSettings__Secret: ${JWT_SECRET}
     networks:
       - naked-net
   nakedbank.webapi:
@@ -17,6 +19,9 @@ services:
       dockerfile: src/NakedBank.WebApi/Dockerfile
     depends_on:
       - db
+    environment:
+      MySqlConfig__ConnectionString: Server=db;Database=NakedDatabase;Uid=root;Pwd=${MYSQL_ROOT_PASSWORD};
+      AuthSettings__Secret: ${JWT_SECRET}
     networks:
       - naked-net
   db:
@@ -28,10 +33,10 @@ services:
     expose:
       - 3306
     environment:
-      MYSQL_ROOT_PASSWORD: naked1234
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: NakedDatabase
       MYSQL_USER: NakedUser
-      MYSQL_PASSWORD: n@k3dPass123
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - type: volume
         source: dbdata

@@ -1,0 +1,15 @@
+{
+    "Logging": {
+        "LogLevel": {
+            "Default": "Information",
+            "Microsoft": "Warning",
+            "Microsoft.Hosting.Lifetime": "Information"
+        }
+    },
+    "MySqlConfig": {
+        "ConnectionString": "Server=localhost;Database=NakedDatabase;Uid=root;Pwd=YOUR_MYSQL_PASSWORD;"
+    },
+    "AuthSettings": {
+        "Secret": "YOUR_JWT_SIGNING_SECRET_MIN_32_CHARS"
+    }
+}

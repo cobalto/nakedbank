@@ -18,7 +18,7 @@ namespace NakedBank.Application.Tests
         {
             var user = _fixture.DefaultUser;
 
-            var authResult = await _fixture.UserService.Authenticate(user.Login.ToString(), "naked1234naked");
+            var authResult = await _fixture.UserService.Authenticate(user.Login.ToString(), ServiceFixture.TestUserPassword);
 
             Assert.Equal(user.Login.ToString(), authResult.Login);
             Assert.Equal(user.UserId, authResult.UserId);
@@ -31,7 +31,7 @@ namespace NakedBank.Application.Tests
         {
             var user = _fixture.DefaultUser;
 
-            var authResult = await _fixture.UserService.Authenticate(user.Login.ToString(), "naked12345naked");
+            var authResult = await _fixture.UserService.Authenticate(user.Login.ToString(), "WrongDemoPass123");
 
             Assert.Null(authResult.Token);
             Assert.NotEmpty(authResult.Errors);

@@ -25,7 +25,7 @@ namespace NakedBank.Front.Services
         {
             User user = new User();
 
-            user.Authorization = await _httpService.Post<AuthResponse>("users/authenticate", new AuthRequest() { Login = "12345678900", Password = "naked1234naked" });
+            user.Authorization = await _httpService.Post<AuthResponse>("users/authenticate", new AuthRequest() { Login = username, Password = password });
             user.Profile = await _httpService.Get<ProfileResponse>("users/profile", user.Authorization.Token);
             user.Accounts = await _httpService.Get<IEnumerable<AccountResponse>>("users/accounts", user.Authorization.Token);
 

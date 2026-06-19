@@ -12,6 +12,13 @@ namespace NakedBank.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var jwtSecret = builder.Configuration["AuthSettings:Secret"];
+            if (string.IsNullOrWhiteSpace(jwtSecret))
+            {
+                throw new InvalidOperationException(
+                    "AuthSettings:Secret is not configured. Set it via User Secrets, environment variables, or appsettings.Development.json.");
+            }
+
             // Configure JWT authentication
             builder.Services.AddAuthentication(x =>
             {
@@ -30,7 +37,7 @@ namespace NakedBank.Api
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "NakedIssuer",
                     ValidAudience = "NakedAudience",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("xEzq98jGYb@DpaNsH9G?uT4KtsY-7B2P")),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
                 };
             });
 
