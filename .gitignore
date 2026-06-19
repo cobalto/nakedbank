@@ -354,3 +354,19 @@ MigrationBackup/
 
 # Mac desktop service store files
 .DS_Store
+
+# OpenCode AI agent files (global + per-project)
+.opencode/
+opencode.json
+AGENTS.md
+CLAUDE.md
+.cursor/
+.cursorrules
+.copilot/
+.github/copilot-instructions.md
+.aider*
+.aider.conf.yml
+.claude/
+
+# AI tasks
+todo_tasks/

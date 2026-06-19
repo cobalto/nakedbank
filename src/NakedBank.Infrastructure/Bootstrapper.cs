@@ -20,19 +20,17 @@ namespace NakedBank.Infrastructure
         [Conditional("DEBUG")]
         private static void InitializeDatabase(IHost host)
         {
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var context = services.GetService<NakedContext>();
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var context = services.GetService<NakedContext>();
 
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
+            context.Database.EnsureDeleted();
+            context.Database.EnsureCreated();
 
-                SeedUsers(context);
-                SeedAccounts(context);
-                SeedBalances(context);
-                SeedTransactions(context);
-            }
+            SeedUsers(context);
+            SeedAccounts(context);
+            SeedBalances(context);
+            SeedTransactions(context);
         }
 
         private static void SeedUsers(NakedContext context)

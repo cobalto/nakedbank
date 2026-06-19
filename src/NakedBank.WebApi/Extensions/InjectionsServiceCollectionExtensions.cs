@@ -19,7 +19,8 @@ namespace NakedBank.WebApi.Extensions
             services.AddScoped<Application.Repositories.IAccountRepository, Infrastructure.Repositories.AccountRepository>();
             services.AddScoped<Application.Repositories.ITransactionRepository, Infrastructure.Repositories.TransactionRepository>();
 
-            services.AddDbContext<NakedContext>(options => options.UseMySQL(configuration["MySqlConfig:ConnectionString"]));
+            services.AddDbContext<NakedContext>(options =>
+                options.UseMySQL(configuration["MySqlConfig:ConnectionString"]!));
 
             services.AddTransient<BalanceUpdateInvocable>();
 

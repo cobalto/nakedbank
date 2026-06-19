@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using NakedBank.Infrastructure.Entities;
 
-namespace NakedBank.Application
+namespace NakedBank.Infrastructure
 {
     public class InfrastructureProfile : Profile
     {

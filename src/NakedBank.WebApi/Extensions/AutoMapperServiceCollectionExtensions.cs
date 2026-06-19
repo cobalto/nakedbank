@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NakedBank.Application;
+using NakedBank.Infrastructure;
 
 namespace NakedBank.WebApi.Extensions
 {

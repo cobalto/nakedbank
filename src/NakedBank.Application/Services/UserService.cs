@@ -19,11 +19,11 @@ namespace NakedBank.Application.Services
         private readonly IMapper _mapper;
 
         public UserService(IConfigurationRepository configuration,
-            IUserRepository userReposistory,
+            IUserRepository userRepository,
             IMapper mapper)
         {
             _configuration = configuration;
-            _userRepository = userReposistory;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -33,7 +33,7 @@ namespace NakedBank.Application.Services
 
             var user = await _userRepository.GetUser(username);
 
-            if (user == null || !user.Password.IsEquals(new Domain.Password(password)))
+            if (user == null || !user.Password.IsEquals(new Password(password)))
             {
                 response.Errors.Add(new Shared.BusinessError("Username/Password", "User not found for credentials"));
                 return response;
@@ -47,11 +47,10 @@ namespace NakedBank.Application.Services
                 var key = Encoding.UTF8.GetBytes(_configuration.GetConfig("AuthSettings:Secret"));
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
-                    Subject = new ClaimsIdentity(new Claim[]
-                    {
-                    new Claim(ClaimTypes.Name, user.Login.ToString()),
-                    new Claim(ClaimTypes.Email, user.EmailAddress.ToString())
-                    }),
+                    Subject = new ClaimsIdentity([
+                        new Claim(ClaimTypes.Name, user.Login.ToString()),
+                        new Claim(ClaimTypes.Email, user.EmailAddress.ToString())
+                    ]),
                     IssuedAt = DateTime.UtcNow,
                     NotBefore = DateTime.UtcNow.AddSeconds(1),
                     Expires = DateTime.UtcNow.AddHours(3),
@@ -72,20 +71,24 @@ namespace NakedBank.Application.Services
 
         private async Task UpdateUserSecurity(User user, SecurityTokenDescriptor tokenDescriptor, string token)
         {
+            var issuedAt = tokenDescriptor.IssuedAt ?? throw new InvalidOperationException("IssuedAt cannot be null");
+            var validSince = tokenDescriptor.NotBefore ?? throw new InvalidOperationException("NotBefore cannot be null");
+            var validUntil = tokenDescriptor.Expires ?? throw new InvalidOperationException("Expires cannot be null");
+
             await _userRepository.SaveToken(new Token(
-                    user.UserId,
-                    token,
-                    (DateTime)tokenDescriptor.IssuedAt,
-                    (DateTime)tokenDescriptor.NotBefore,
-                    (DateTime)tokenDescriptor.Expires
-                ));
+                user.UserId,
+                token,
+                issuedAt,
+                validSince,
+                validUntil
+            ));
         }
 
         public async Task<ProfileResponse> GetUserProfile(string username)
         {
             var user = await _userRepository.GetUser(username);
 
-            ProfileResponse response = _mapper.Map<ProfileResponse>(user);
+            var response = _mapper.Map<ProfileResponse>(user);
 
             return response;
         }

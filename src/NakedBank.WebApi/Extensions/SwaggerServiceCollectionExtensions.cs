@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 namespace NakedBank.WebApi.Extensions
 {
@@ -11,7 +11,7 @@ namespace NakedBank.WebApi.Extensions
         {
             services.AddSwaggerGen(gen =>
             {
-                gen.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                gen.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = configuration["AppDetails:Title"],
                     Version = configuration["AppDetails:Version"],
@@ -19,7 +19,7 @@ namespace NakedBank.WebApi.Extensions
                     Contact = new OpenApiContact
                     {
                         Name = "Daniel Pessoa",
-                        Url = new System.Uri("https://cobalto.dev")
+                        Url = new Uri("https://cobalto.dev")
                     }
                 });
 
@@ -28,28 +28,14 @@ namespace NakedBank.WebApi.Extensions
                     Description = @"JWT Authorization header using the Bearer scheme. <br/>
                       Enter 'Bearer' [space] and then your token in the text input below.
                       <br/>Example: 'Bearer 12345abcdef'",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer"
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT"
                 });
 
-                gen.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                gen.AddSecurityRequirement(document => new OpenApiSecurityRequirement
                 {
-                    {
-                        new OpenApiSecurityScheme
-                        {
-                            Reference = new OpenApiReference
-                            {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            },
-                            Scheme = "oauth2",
-                            Name = "Bearer",
-                            In = ParameterLocation.Header,
-                        },
-                        new List<string>()
-                    }
+                    [new OpenApiSecuritySchemeReference("Bearer", document)] = []
                 });
             });
 

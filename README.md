@@ -2,7 +2,7 @@
 > A simple full stack banking application.
 
 ### Stack Composition
-+ .Net 9 [link](https://dotnet.microsoft.com/)
++ .NET 10 [link](https://dotnet.microsoft.com/)
 + Entity Framework Core [link](https://docs.microsoft.com/pt-br/ef/core/)
 + Blazor WebAssembly [link](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)
 + Swagger [link](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio)
