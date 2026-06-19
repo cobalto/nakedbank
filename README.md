@@ -1,113 +1,219 @@
-# Nakedbank 🍑
-> A simple full stack banking application.
+# Nakedbank
 
-### Stack Composition
-+ .NET 10 [link](https://dotnet.microsoft.com/)
-+ Entity Framework Core [link](https://docs.microsoft.com/pt-br/ef/core/)
-+ Blazor WebAssembly [link](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor)
-+ Swagger [link](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio)
-+ MySql [link](https://dev.mysql.com/doc/connector-net/en/connector-net-entityframework-core.html)
-+ Docker [link](https://docs.microsoft.com/en-us/dotnet/architecture/containerized-lifecycle/design-develop-containerized-apps/visual-studio-tools-for-docker)
+A full-stack banking sample application built with clean architecture on **.NET 10**.  
+The name is a [silly joke](https://web.archive.org/web/20250209214501/https://blog.nubank.com.br/por-que-nubank-chama-nubank/) about a certain purple Brazilian bank.
 
-### Third Party Libraries
-+ AutoMapper [link](https://automapper.org/)
-+ Coravel [link](https://docs.coravel.net/)
-+ XUnix [link](https://xunit.net/)
+---
 
-> SPA Blazor app based on Jason Watmore's github examples [[github]](https://github.com/cornflourblue/blazor-webassembly-jwt-authentication-example) [[doc]](https://jasonwatmore.com/post/2020/08/13/blazor-webassembly-jwt-authentication-example-tutorial#app-route-view-cs)
+## At a glance
 
-### Project Composition
-Project | Description
---- | ---
-NakedBank.Application | Domain Service
-NakedBank.Domain | Domain Models & Value Objects
-NakedBank.Infrastructure | Data Layer, DbContext and Repositories
-NakedBank.Shared | Common DTOs
-NakedBank.WebApi | API Project
-NakedBank.Front | Blazor SPA
-NakedBank.Application.Tests | Test Project
-NakedBank.Domain.Tests | Test Project
+| | |
+|---|---|
+| **Backend** | ASP.NET Core REST API, JWT auth, Swagger, Coravel scheduler |
+| **Frontend** | Blazor WebAssembly SPA |
+| **Data** | Entity Framework Core + MySQL |
+| **Tests** | xUnit + NSubstitute (domain & application layers) |
+| **Deploy** | Docker Compose under `deploy/` |
 
-## Tests
-![nakedbank_tests](https://user-images.githubusercontent.com/1196314/92039307-3f62ef80-ed4b-11ea-8acf-e1060d01fcc4.PNG)
+SDK version is pinned in [`global.json`](global.json) (`10.0.301`).
 
-### First time setup
+---
 
-#### Secrets and configuration
+## What works today
 
-Committed config files use placeholders only. Set secrets locally using one of these approaches:
+- **Layered architecture** — Domain, Application, Infrastructure, Shared, WebApi, Front
+- **User authentication** — JWT issued on login; protected profile and account endpoints
+- **Account operations** — view balances and transactions; deposit, withdraw, and pay bills
+- **Scheduled interest** — Coravel job updates account balances on a timer
+- **Database seeding** — DEBUG builds recreate and seed a demo database on startup
+- **API documentation** — Swagger UI at `/swagger`
+- **Secrets hygiene** — no production credentials in source control; local setup via `.env`, User Secrets, or `appsettings.Development.json` (see [Configuration](#configuration))
+- **Unit tests** — 19 tests across domain and application projects
 
-**Docker Compose (recommended)**
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+    Front["NakedBank.Front<br/>Blazor WASM"]
+    WebApi["NakedBank.WebApi<br/>REST + Swagger"]
+    App["NakedBank.Application<br/>Services"]
+    Domain["NakedBank.Domain<br/>Models & rules"]
+    Infra["NakedBank.Infrastructure<br/>EF Core + MySQL"]
+    Shared["NakedBank.Shared<br/>DTOs"]
+
+    Front --> WebApi
+    WebApi --> App
+    App --> Domain
+    WebApi --> Infra
+    Infra --> App
+    WebApi --> Shared
+    Front --> Shared
+```
+
+| Project | Role |
+|---------|------|
+| `NakedBank.Domain` | Entities, value objects, domain exceptions |
+| `NakedBank.Application` | Business services and repository interfaces |
+| `NakedBank.Infrastructure` | `DbContext`, repositories, DEBUG seeding |
+| `NakedBank.Shared` | Request/response DTOs shared by API and Front |
+| `NakedBank.WebApi` | **Primary** REST API |
+| `NakedBank.Front` | Blazor WebAssembly UI |
+| `NakedBank.Api` | gRPC service — **experimental**, not production-ready |
+| `NakedBank.*.Tests` | Unit tests |
+
+---
+
+## API
+
+| Method | Route | Auth | Description |
+|--------|-------|------|-------------|
+| `POST` | `/api/users/authenticate` | — | Login, returns JWT |
+| `GET` | `/api/users/profile` | JWT | Current user profile |
+| `GET` | `/api/users/accounts` | JWT | User accounts |
+| `GET` | `/api/accounts/{id}/balances` | JWT | Balance history |
+| `GET` | `/api/accounts/{id}/transactions` | JWT | Recent transactions |
+| `POST` | `/api/accounts/{id}/transactions` | JWT | Deposit, withdraw, or payment |
+
+---
+
+## Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download) (see `global.json`)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — optional, recommended for the backend stack
+- Local MySQL — only if running WebApi outside Docker
+
+---
+
+## Quick start
+
+### Docker Compose (backend)
 
 ```bash
 cd deploy
 cp .env.example .env
-# Edit .env with your local values, then:
-docker-compose up --build
+# Edit .env, then:
+docker compose up --build
 ```
 
-Docker Compose reads `deploy/.env` and injects MySQL passwords and the JWT signing key into the database and API containers.
+| Service | Port | Purpose |
+|---------|------|---------|
+| MySQL | `3306` | `NakedDatabase` |
+| Adminer | `8080` | Database admin UI |
+| `nakedbank.webapi` | dynamic | REST API — run `docker compose ps` for the mapped port |
+| `nakedbank.api` | `8080` / `8081` | gRPC (experimental) |
 
-**WebApi without Docker**
+The Blazor frontend is **not** in Compose yet. Run it locally (below) and set `apiUrl` to the WebApi address.
 
-Copy the example development settings and fill in your values:
+> On macOS/Linux, `deploy/docker-compose.override.yml` uses Windows `%APPDATA%` volume mounts. Prefer `.env` variables or run WebApi with `dotnet run`.
+
+### Local WebApi + Front
+
+**1. Configuration** — see [Configuration](#configuration) below.
+
+**2. API**
 
 ```bash
-cp src/NakedBank.WebApi/appsettings.Development.json.example src/NakedBank.WebApi/appsettings.Development.json
+dotnet run --project src/NakedBank.WebApi
 ```
 
-Or use [.NET User Secrets](https://learn.microsoft.com/en-us/aspnet/core/security/app-secrets):
+Swagger: `https://localhost:5001/swagger`
+
+**3. Frontend**
+
+Set `apiUrl` in `src/NakedBank.Front/wwwroot/appsettings.json`:
+
+```json
+{
+    "apiUrl": "https://localhost:5001/api/"
+}
+```
 
 ```bash
-dotnet user-secrets set "AuthSettings:Secret" "YOUR_JWT_SIGNING_SECRET" --project src/NakedBank.WebApi
-dotnet user-secrets set "MySqlConfig:ConnectionString" "Server=localhost;Database=NakedDatabase;Uid=root;Pwd=YOUR_PASSWORD;" --project src/NakedBank.WebApi
+dotnet run --project src/NakedBank.Front
 ```
 
-Environment variables override appsettings (double underscore for nested keys):
-
-- `AuthSettings__Secret`
-- `MySqlConfig__ConnectionString`
-
-**Seeded demo user (DEBUG builds)**
+### Demo account (DEBUG seed)
 
 | Field | Value |
 |-------|-------|
 | Username | `12345678900` |
 | Password | `NakedDemoPass123` |
 
-With Docker installed, open the solution in VS and run the default "Docker Compose" profile after creating `deploy/.env`.
+> **Note:** Password verification uses a legacy hash format. If login fails against a seeded database, check that seed data and the `Password` value object use the same hashing algorithm.
 
-#### The project consists of three containers:
-+ Dotnet Core image built with the project
-+ MySql Official image
-+ Adminer image for database management
+---
 
-![docker_naked](https://user-images.githubusercontent.com/1196314/91937111-a76ff200-ecc7-11ea-984c-62a756d74d73.PNG)
+## Configuration
 
-### Running the front-end:
-The Blazor front end will require to have it's appsettings.json changed accordly with the address set for the backend. 
-You can find the file ~\NakedBank.Front\wwwroot\appsettings.json
+Committed config uses placeholders. Provide secrets locally using **one** of:
 
-### What's missing
-+ Auth Token Recycling
-+ "Transfer" Operations
-+ User Profile Page
-+ Parametrization of some "magic strings"
-+ Better use of the Domain models, too much control on the services logic
-+ Better control of some visual components when not logged in (Blazor Webassembly right now still has some problems updating components when values change)
-+ Charts (most of them are paid, Chart.js has a port to Blazor but only documentation for the Server-Side version)
-+ More tests
+**Docker** — copy and edit `deploy/.env.example` → `deploy/.env`
 
-## Open API
-![open_api_nakedbank](https://user-images.githubusercontent.com/1196314/91937110-a76ff200-ecc7-11ea-9365-98d8f6ab2ba9.PNG)
+**Development file**
 
-## Front-End
-![nakedbank_fron1](https://user-images.githubusercontent.com/1196314/91937098-a212a780-ecc7-11ea-8f8c-3e5c7dd5c9be.PNG)
-![nakedbank_fron2](https://user-images.githubusercontent.com/1196314/91937103-a3dc6b00-ecc7-11ea-8f70-fd313e50d710.PNG)
-![nakedbank_fron3](https://user-images.githubusercontent.com/1196314/91937105-a5a62e80-ecc7-11ea-9c3a-d6f5a4574b3a.PNG)
-![nakedbank_fron4](https://user-images.githubusercontent.com/1196314/91937106-a63ec500-ecc7-11ea-9330-b92af01fb762.PNG)
-![nakedbank_fron5](https://user-images.githubusercontent.com/1196314/91937108-a63ec500-ecc7-11ea-8145-e7d063701675.PNG)
-![nakedbank_fron6](https://user-images.githubusercontent.com/1196314/91937109-a6d75b80-ecc7-11ea-9344-90ea971a3824.PNG)
+```bash
+cp src/NakedBank.WebApi/appsettings.Development.json.example \
+   src/NakedBank.WebApi/appsettings.Development.json
+```
 
-> DISCLAIMER:  
-> YES. The name is a [silly joke](https://web.archive.org/web/20250209214501/https://blog.nubank.com.br/por-que-nubank-chama-nubank/) with a purple brazilian bank
+**User Secrets**
+
+```bash
+dotnet user-secrets set "AuthSettings:Secret" "YOUR_JWT_SIGNING_SECRET" \
+  --project src/NakedBank.WebApi
+dotnet user-secrets set "MySqlConfig:ConnectionString" \
+  "Server=localhost;Database=NakedDatabase;Uid=root;Pwd=YOUR_PASSWORD;" \
+  --project src/NakedBank.WebApi
+```
+
+**Environment variables** (override appsettings):
+
+| Variable | Purpose |
+|----------|---------|
+| `AuthSettings__Secret` | JWT signing key |
+| `MySqlConfig__ConnectionString` | MySQL connection |
+
+---
+
+## Build & test
+
+```bash
+dotnet build NakedBank.sln
+dotnet test
+```
+
+Individual projects:
+
+```bash
+dotnet test tests/NakedBank.Domain.Tests
+dotnet test tests/NakedBank.Application.Tests
+```
+
+---
+
+## Known limitations & future work
+
+- gRPC `NakedBank.Api` is included in Compose but incomplete (no DI wiring, stub handlers)
+- Schema managed via `EnsureCreated` + seed — EF Core migrations not in place yet
+- CORS allows any origin; `AllowedHosts` is `localhost` only
+- Password hashing should move to a modern hasher with per-user salts
+- Docker Compose override paths are Windows-oriented; cross-platform fixes pending
+- Blazor frontend is not containerized in Compose
+- Login page still displays demo credentials in the UI during development
+- Blazor WASM auth and route-guard edge cases remain
+- Charts and richer dashboards need a frontend stack upgrade (current WASM setup limits chart library options)
+- Planned features: token refresh, transfers, user profile page, idempotency for financial POSTs
+- Code quality: parametrize remaining magic strings; push more business rules into the domain layer
+
+---
+
+## Third-party libraries
+
+- [AutoMapper](https://automapper.org/) — mapping
+- [Coravel](https://docs.coravel.net/) — scheduling
+- [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle.AspNetCore) — OpenAPI / Swagger
+- [xUnit](https://xunit.net/) + [NSubstitute](https://nsubstitute.github.io/) — testing
+
+The SPA auth flow started from [Jason Watmore's Blazor JWT example](https://github.com/cornflourblue/blazor-webassembly-jwt-authentication-example).
